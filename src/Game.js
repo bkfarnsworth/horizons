@@ -34,9 +34,7 @@ export default function Game() {
 
   return (
     <div>
-      <div>
-        Score: {score}/{questions.length}
-      </div>
+      <div>Score: {score}</div>
       {question ? (
         <Question
           question={question}
@@ -44,9 +42,15 @@ export default function Game() {
             setQuestionNum((prev) => prev + 1);
           }}
           onSubmit={(results) => {
-            if (results.correct === question.answer.length) {
-              setScore((prev) => prev + 1);
-            }
+            let questionScore = 0;
+            // add a point for all correct
+            questionScore += results.filter((el) => el.status === "correct")
+              .length;
+            // subtract a point for all incorrect
+            questionScore -= results.filter((el) => el.status === "wrong")
+              .length;
+
+            setScore((prev) => prev + questionScore);
           }}
         />
       ) : (
@@ -65,7 +69,10 @@ function Question({ question, onSubmit, onNextClick }) {
     <div>
       <div>Question: {question.question}</div>
       <div>Answer (enter a comma delimited list):</div>
-      <textarea onChange={(e) => setResponse(e.target.value)} />
+      <textarea
+        value={response}
+        onChange={(e) => setResponse(e.target.value)}
+      />
       <div>
         <button
           onClick={() => {
@@ -83,6 +90,7 @@ function Question({ question, onSubmit, onNextClick }) {
         <button
           onClick={() => {
             setResults(null);
+            setResponse("");
             onNextClick();
           }}
         >
