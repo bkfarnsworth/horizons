@@ -2,12 +2,21 @@ import React, { useState } from "react";
 
 export default function Game() {
   let [questionNum, setQuestionNum] = useState(0);
-  let [response, setResponse] = useState();
   let [score, setScore] = useState(0);
   let questions = [
     {
       question: "What countries border Germany?",
-      answer: "a"
+      answer: [
+        "Denmark",
+        "Poland",
+        "Czech Republic",
+        "Austria",
+        "Switzerland",
+        "France",
+        "Luxembourg",
+        "Belgium",
+        "Netherlands"
+      ]
     },
     {
       question: "What countries border Peru?",
@@ -29,18 +38,13 @@ export default function Game() {
       {question ? (
         <Question
           question={question}
-          onSubmit={() => {
-            if (response === question.answer) {
-              alert("You got it right!");
-              setScore((prev) => prev + 1);
-            } else {
-              alert("You got it wrong");
-            }
+          onNextClick={() => {
             setQuestionNum((prev) => prev + 1);
           }}
-          onResponseChange={(e) => {
-            // console.log(val);
-            setResponse(e.target.value);
+          onSubmit={(results) => {
+            if (results.correct === question.answer.length) {
+              setScore((prev) => prev + 1);
+            }
           }}
         />
       ) : (
@@ -50,13 +54,71 @@ export default function Game() {
   );
 }
 
-function Question({ question, onSubmit, onResponseChange }) {
+function Question({ question, onSubmit, onNextClick }) {
+  let [response, setResponse] = useState();
+  let [results, setResults] = useState();
+  let Results = results?.component;
+
   return (
     <div>
-      Question: {question.question}
-      Answer (enter a comma delimited list):{" "}
-      <textarea onChange={onResponseChange} />
-      <button onClick={onSubmit}>Submit</button>
+      <div>Question: {question.question}</div>
+      <div>Answer (enter a comma delimited list):</div>
+      <textarea onChange={(e) => setResponse(e.target.value)} />
+      <div>
+        <button
+          onClick={() => {
+            let results = getResults(response, question.answer);
+
+            console.log(results);
+
+            setResults(results);
+
+            onSubmit(results);
+          }}
+        >
+          Submit
+        </button>
+        <button
+          onClick={() => {
+            setResults(null);
+            onNextClick();
+          }}
+        >
+          Next
+        </button>
+      </div>
+      {Results ? <Results /> : null}
     </div>
   );
+}
+
+function getResults(response, answer) {
+  // make the answer like a response just so we can scrub both the same way
+  answer = answer.join(",");
+
+  let scrub = (str) => str.replaceAll(" ", "").split(",");
+
+  let responseArr = scrub(response);
+  let answerArr = scrub(answer);
+
+  let results = {
+    correct: responseArr.filter((el) => answerArr.includes(el)),
+    wrong: responseArr.filter((el) => !answerArr.includes(el)),
+    missing: answerArr.filter((el) => !responseArr.includes(el))
+  };
+
+  results.component = () => {
+    return (
+      <div>
+        Correct: {results.correct.join(", ")}
+        <br />
+        Wrong: {results.wrong.join(", ")}
+        <br />
+        Missing: {results.missing.join(", ")}
+        <br />
+      </div>
+    );
+  };
+
+  return results;
 }
