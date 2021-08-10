@@ -94,28 +94,59 @@ function Question({ question, onSubmit, onNextClick }) {
 
 function getResults(response, answer) {
   // make the answer like a response just so we can scrub both the same way
-  answer = answer.join(",");
+  let strAnswer = answer.join(",");
+  let unscrubbedResponseAsArr = response.split(", ");
 
-  let scrub = (str) => str.replaceAll(" ", "").split(",");
+  let scrub = (str) =>
+    str
+      .replaceAll(" ", "")
+      .split(",")
+      .map((el) => el.toLowerCase());
 
   let responseArr = scrub(response);
-  let answerArr = scrub(answer);
+  let answerArr = scrub(strAnswer);
 
-  let results = {
-    correct: responseArr.filter((el) => answerArr.includes(el)),
-    wrong: responseArr.filter((el) => !answerArr.includes(el)),
-    missing: answerArr.filter((el) => !responseArr.includes(el))
-  };
+  let results = [];
+
+  responseArr.forEach((el, i) => {
+    let indexOfAnswer = answerArr.indexOf(el);
+    if (indexOfAnswer !== -1) {
+      results.push({
+        answer: answer[indexOfAnswer], // get the pretty name
+        status: "correct"
+      });
+    } else {
+      results.push({
+        answer: unscrubbedResponseAsArr[i], // get the pretty name
+        status: "wrong"
+      });
+    }
+  });
+
+  //find all the ones that were missing as well
+  let missing = answer
+    .filter((el) => !results.find((_el) => _el.answer === el))
+    .map((el) => ({ answer: el, status: "missing" }));
+  results.push(...missing);
+
+  console.log(JSON.stringify(results, null, "\t"));
+
+  // results = {
+  //   correct: responseArr.filter((el) => answerArr.includes(el)),
+  //   wrong: responseArr.filter((el) => !answerArr.includes(el)),
+  //   missing: answerArr.filter((el) => !responseArr.includes(el))
+  // };
 
   results.component = () => {
     return (
       <div>
-        Correct: {results.correct.join(", ")}
-        <br />
-        Wrong: {results.wrong.join(", ")}
-        <br />
-        Missing: {results.missing.join(", ")}
-        <br />
+        {results.map((el) => {
+          let color = el.status === "correct" ? "green" : "red";
+          let textDecoration =
+            el.status === "wrong" ? "line-through" : "initial";
+
+          return <div style={{ color, textDecoration }}>{el.answer}</div>;
+        })}
       </div>
     );
   };
