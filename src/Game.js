@@ -20,15 +20,17 @@ export default function Game() {
     },
     {
       question: "What countries border Peru?",
-      answer: "b"
+      answer: ["Ecuador", "Colombia", "Brazil", "Bolivia", "Chile"]
     },
     {
-      question: "What countries border Brazil?",
-      answer: "c"
+      question: "What countries border Nicaragua?",
+      answer: ["Honduras", "Costa Rica"]
     }
   ];
 
   let question = questions[questionNum];
+
+  //
 
   return (
     <div>
