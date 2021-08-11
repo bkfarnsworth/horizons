@@ -87,7 +87,7 @@ function Question({ question, onSubmit, onNextClick }) {
         >
           Submit
         </button>
-        <button
+        {results ? <button
           onClick={() => {
             setResults(null);
             setResponse("");
@@ -95,7 +95,7 @@ function Question({ question, onSubmit, onNextClick }) {
           }}
         >
           Next
-        </button>
+        </button> : null }
       </div>
       {Results ? <Results /> : null}
     </div>
