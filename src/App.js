@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Home from "./Home";
 import Game from "./Game";
+import { ReactComponent as YourSvg } from "./World_Map.svg";
 import "./styles.css";
 
 export default function App() {
@@ -20,6 +21,9 @@ export default function App() {
               <Link to="/users">Users</Link>
             </li>
             <li>
+              <Link to="/map">Map</Link>
+            </li>
+            <li>
               <Link to="/game">Game</Link>
             </li>
           </ul>
@@ -33,6 +37,11 @@ export default function App() {
           </Route>
           <Route path="/game">
             <Game />
+          </Route>
+          <Route path="/map">
+            <div>
+              <YourSvg width="100%" />
+            </div>
           </Route>
           <Route path="/">
             <Home />

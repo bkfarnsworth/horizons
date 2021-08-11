@@ -1,33 +1,9 @@
 import React, { useState } from "react";
+import questions from "./questions.json";
 
 export default function Game() {
   let [questionNum, setQuestionNum] = useState(0);
   let [score, setScore] = useState(0);
-  let questions = [
-    {
-      question: "What countries border Germany?",
-      answer: [
-        "Denmark",
-        "Poland",
-        "Czech Republic",
-        "Austria",
-        "Switzerland",
-        "France",
-        "Luxembourg",
-        "Belgium",
-        "Netherlands"
-      ]
-    },
-    {
-      question: "What countries border Peru?",
-      answer: ["Ecuador", "Colombia", "Brazil", "Bolivia", "Chile"]
-    },
-    {
-      question: "What countries border Nicaragua?",
-      answer: ["Honduras", "Costa Rica"]
-    }
-  ];
-
   let question = questions[questionNum];
 
   //
@@ -87,15 +63,17 @@ function Question({ question, onSubmit, onNextClick }) {
         >
           Submit
         </button>
-        {results ? <button
-          onClick={() => {
-            setResults(null);
-            setResponse("");
-            onNextClick();
-          }}
-        >
-          Next
-        </button> : null }
+        {results ? (
+          <button
+            onClick={() => {
+              setResults(null);
+              setResponse("");
+              onNextClick();
+            }}
+          >
+            Next
+          </button>
+        ) : null}
       </div>
       {Results ? <Results /> : null}
     </div>
