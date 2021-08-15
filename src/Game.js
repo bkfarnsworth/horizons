@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import questions from "./questions.json";
+import questionsAboutBorders from "./questionsAboutBorders";
 
 export default function Game() {
-  let [questionNum, setQuestionNum] = useState(0);
+  let [remainingQuestions, setRemainingQuestions] = useState(
+    questionsAboutBorders
+  );
+  let getRandomIndex = () =>
+    getRandomIntInclusive(0, remainingQuestions.length - 1);
+  let [randomIndex, setRandomIndex] = useState(getRandomIndex());
   let [score, setScore] = useState(0);
-  let question = questions[questionNum];
-
-  //
+  let question = remainingQuestions[randomIndex];
 
   return (
     <div>
@@ -15,7 +18,12 @@ export default function Game() {
         <Question
           question={question}
           onNextClick={() => {
-            setQuestionNum((prev) => prev + 1);
+            //filter out the current question from the remaining questions
+            setRemainingQuestions((prev) => {
+              return prev.filter((q) => q !== question);
+            });
+            //set new random index
+            setRandomIndex(getRandomIndex());
           }}
           onSubmit={(results) => {
             let questionScore = 0;
@@ -140,4 +148,10 @@ function getResults(response, answer) {
   };
 
   return results;
+}
+
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
