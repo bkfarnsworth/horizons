@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Home from "./Home";
 import Game from "./Game";
+import SplashScreen from "./SplashScreen";
 import { ReactComponent as YourSvg } from "./World_Map.svg";
 import "./styles.css";
 
@@ -18,7 +19,7 @@ export default function App() {
               <Link to="/about">About</Link>
             </li>
             <li>
-              <Link to="/users">Users</Link>
+              <Link to="/users">SplashScreen</Link>
             </li>
             <li>
               <Link to="/map">Map</Link>
@@ -33,7 +34,7 @@ export default function App() {
             <div>about</div>
           </Route>
           <Route path="/users">
-            <div>users</div>
+            <SplashScreen />
           </Route>
           <Route path="/game">
             <Game />
