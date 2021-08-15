@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import questionsAboutBorders from "./questionsAboutBorders";
 
+const numQuestions = 10;
+
 export default function Game() {
   let [remainingQuestions, setRemainingQuestions] = useState(
     questionsAboutBorders
@@ -9,34 +11,41 @@ export default function Game() {
     getRandomIntInclusive(0, remainingQuestions.length - 1);
   let [randomIndex, setRandomIndex] = useState(getRandomIndex());
   let [score, setScore] = useState(0);
+  let [questionNum, setQuestionNum] = useState(1);
   let question = remainingQuestions[randomIndex];
 
   return (
     <div>
       <div>Score: {score}</div>
-      {question ? (
-        <Question
-          question={question}
-          onNextClick={() => {
-            //filter out the current question from the remaining questions
-            setRemainingQuestions((prev) => {
-              return prev.filter((q) => q !== question);
-            });
-            //set new random index
-            setRandomIndex(getRandomIndex());
-          }}
-          onSubmit={(results) => {
-            let questionScore = 0;
-            // add a point for all correct
-            questionScore += results.filter((el) => el.status === "correct")
-              .length;
-            // subtract a point for all incorrect
-            questionScore -= results.filter((el) => el.status === "wrong")
-              .length;
 
-            setScore((prev) => prev + questionScore);
-          }}
-        />
+      {questionNum <= numQuestions ? (
+        <>
+          <div>Question Num: {questionNum}</div>
+          <Question
+            question={question}
+            onNextClick={() => {
+              //filter out the current question from the remaining questions
+              setRemainingQuestions((prev) => {
+                return prev.filter((q) => q !== question);
+              });
+              //set new random index
+              setRandomIndex(getRandomIndex());
+
+              setQuestionNum((prev) => prev + 1);
+            }}
+            onSubmit={(results) => {
+              let questionScore = 0;
+              // add a point for all correct
+              questionScore += results.filter((el) => el.status === "correct")
+                .length;
+              // subtract a point for all incorrect
+              questionScore -= results.filter((el) => el.status === "wrong")
+                .length;
+
+              setScore((prev) => prev + questionScore);
+            }}
+          />
+        </>
       ) : (
         <div>All done!</div>
       )}
@@ -45,7 +54,7 @@ export default function Game() {
 }
 
 function Question({ question, onSubmit, onNextClick }) {
-  let [response, setResponse] = useState();
+  let [response, setResponse] = useState("");
   let [results, setResults] = useState();
   let Results = results?.component;
 
@@ -61,11 +70,7 @@ function Question({ question, onSubmit, onNextClick }) {
         <button
           onClick={() => {
             let results = getResults(response, question.answer);
-
-            console.log(results);
-
             setResults(results);
-
             onSubmit(results);
           }}
         >
@@ -91,14 +96,15 @@ function Question({ question, onSubmit, onNextClick }) {
 function getResults(response, answer) {
   // make the answer like a response just so we can scrub both the same way
   let strAnswer = answer.join(",");
-  let unscrubbedResponseAsArr = response.split(", ");
 
+  //convert unscrubbed to array as well for lookups we will need lated
+  let unscrubbedResponseAsArr = splitSafe(response, ",");
+
+  // create scrubber
   let scrub = (str) =>
-    str
-      .replaceAll(" ", "")
-      .split(",")
-      .map((el) => el.toLowerCase());
+    splitSafe(str.replaceAll(" ", ""), ",").map((el) => el.toLowerCase());
 
+  // scrub both answer and response
   let responseArr = scrub(response);
   let answerArr = scrub(strAnswer);
 
@@ -125,13 +131,7 @@ function getResults(response, answer) {
     .map((el) => ({ answer: el, status: "missing" }));
   results.push(...missing);
 
-  console.log(JSON.stringify(results, null, "\t"));
-
-  // results = {
-  //   correct: responseArr.filter((el) => answerArr.includes(el)),
-  //   wrong: responseArr.filter((el) => !answerArr.includes(el)),
-  //   missing: answerArr.filter((el) => !responseArr.includes(el))
-  // };
+  // console.log(JSON.stringify(results, null, "\t"));
 
   results.component = () => {
     return (
@@ -141,7 +141,11 @@ function getResults(response, answer) {
           let textDecoration =
             el.status === "wrong" ? "line-through" : "initial";
 
-          return <div style={{ color, textDecoration }}>{el.answer}</div>;
+          return (
+            <div key={el.answer} style={{ color, textDecoration }}>
+              {el.answer}
+            </div>
+          );
         })}
       </div>
     );
@@ -154,4 +158,13 @@ function getRandomIntInclusive(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+}
+
+function splitSafe(string, delim) {
+  // catch undefined and empty string, which splits into [""]
+  if (string) {
+    return string.split(delim);
+  } else {
+    return [];
+  }
 }
