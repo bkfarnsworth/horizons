@@ -153,7 +153,7 @@ function getResults(response, { countryObj, answer }) {
           src={`https://www.google.com/maps/embed/v1/place?q=${countryObj.country}&key=AIzaSyCgGySxaFgQ8a7UgoreboSvzoPDv_QQ5Po`}
           width="95%"
           style={{ border: 0 }}
-          height="200"
+          height="400"
           allowFullScreen
           loading="lazy"
         ></iframe>
