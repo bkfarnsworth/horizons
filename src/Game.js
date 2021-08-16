@@ -69,7 +69,7 @@ function Question({ question, onSubmit, onNextClick }) {
       <div>
         <button
           onClick={() => {
-            let results = getResults(response, question.answer);
+            let results = getResults(response, question);
             setResults(results);
             onSubmit(results);
           }}
@@ -93,7 +93,7 @@ function Question({ question, onSubmit, onNextClick }) {
   );
 }
 
-function getResults(response, answer) {
+function getResults(response, { countryObj, answer }) {
   // make the answer like a response just so we can scrub both the same way
   let strAnswer = answer.join(",");
 
@@ -147,6 +147,16 @@ function getResults(response, answer) {
             </div>
           );
         })}
+
+        <iframe
+          title="google_map"
+          src={`https://www.google.com/maps/embed/v1/place?q=${countryObj.country}&key=AIzaSyCgGySxaFgQ8a7UgoreboSvzoPDv_QQ5Po`}
+          width="95%"
+          style={{ border: 0 }}
+          height="200"
+          allowFullScreen
+          loading="lazy"
+        ></iframe>
       </div>
     );
   };
