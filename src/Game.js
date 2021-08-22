@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Textarea, Button } from "@chakra-ui/react";
 import questionsAboutBorders from "./questionsAboutBorders";
 
 const numQuestions = 10;
@@ -62,12 +63,13 @@ function Question({ question, onSubmit, onNextClick }) {
     <div>
       <div>Question: {question.question}</div>
       <div>Answer (enter a comma delimited list):</div>
-      <textarea
+      <Textarea
+        width="90%"
         value={response}
         onChange={(e) => setResponse(e.target.value)}
       />
       <div>
-        <button
+        <Button
           onClick={() => {
             let results = getResults(response, question);
             setResults(results);
@@ -75,9 +77,9 @@ function Question({ question, onSubmit, onNextClick }) {
           }}
         >
           Submit
-        </button>
+        </Button>
         {results ? (
-          <button
+          <Button
             onClick={() => {
               setResults(null);
               setResponse("");
@@ -85,7 +87,7 @@ function Question({ question, onSubmit, onNextClick }) {
             }}
           >
             Next
-          </button>
+          </Button>
         ) : null}
       </div>
       {Results ? <Results /> : null}
