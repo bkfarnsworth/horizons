@@ -16,7 +16,7 @@ import "./styles.css";
 const theme = extendTheme(customTheme);
 
 export default function App() {
-  let [showSplashScreen, setShowSplashScreen] = useState(true);
+  let [showSplashScreen, setShowSplashScreen] = useState(false);
   let onAnimationDone = () => setShowSplashScreen(false);
 
   return (
@@ -36,23 +36,6 @@ export default function App() {
         ) : (
           <Router>
             <div className="App">
-              <Flex justify="space-around">
-                <Link to="/" as={ReactRouterLink}>
-                  Home
-                </Link>
-                <Link to="/about" as={ReactRouterLink}>
-                  About
-                </Link>
-                <Link to="/users" as={ReactRouterLink}>
-                  SplashScreen
-                </Link>
-                <Link to="/map" as={ReactRouterLink}>
-                  Map
-                </Link>
-                <Link to="/game" as={ReactRouterLink}>
-                  Game
-                </Link>
-              </Flex>
               <Switch>
                 <Route path="/about">
                   <div>about</div>
