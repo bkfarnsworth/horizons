@@ -17,13 +17,7 @@ const theme = extendTheme(customTheme);
 
 export default function App() {
   let [showSplashScreen, setShowSplashScreen] = useState(true);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setShowSplashScreen(false);
-    }, 5000);
-    // }, 5000000);
-  }, []);
+  let onAnimationDone = () => setShowSplashScreen(false);
 
   return (
     <ChakraProvider theme={theme}>
@@ -37,7 +31,7 @@ export default function App() {
               marginTop: "25%"
             }}
           >
-            <SplashScreen />
+            <SplashScreen onAnimationDone={onAnimationDone} />
           </div>
         ) : (
           <Router>

@@ -2,20 +2,21 @@ import React, { useEffect } from "react";
 import lottie from "lottie-web";
 import splashScreenData from "./splash-screen.json";
 
-export default function SplashScreenh() {
+export default function SplashScreenh({ onAnimationDone }) {
   useEffect(() => {
-    console.log("running");
-
     var animation = lottie.loadAnimation({
       container: document.getElementById("lottie-splash"), // Required
       animationData: splashScreenData, // Required
       renderer: "svg", // Required
-      loop: true, // Optional
+      loop: false, // Optional
       autoplay: true, // Optional
       name: "Hello World" // Name for future reference. Optional.
     });
 
+    animation.addEventListener("complete", onAnimationDone);
+
     return function cleanup() {
+      animation.removeEventListener("complete", onAnimationDone);
       animation.destroy();
     };
   });
